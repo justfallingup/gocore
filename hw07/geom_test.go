@@ -1,16 +1,13 @@
 package geom
 
-import (
-	"reflect"
-	"testing"
-)
+import "testing"
 
 func TestGeom_Distance(t *testing.T) {
 	type fields struct {
-		x1 float64
-		y1 float64
-		x2 float64
-		y2 float64
+		X1 float64
+		Y1 float64
+		X2 float64
+		Y2 float64
 	}
 	tests := []struct {
 		name   string
@@ -20,10 +17,10 @@ func TestGeom_Distance(t *testing.T) {
 		{
 			name: "distance",
 			fields: fields{
-				x1: 1,
-				y1: 1,
-				x2: 4,
-				y2: 5,
+				X1: 1,
+				Y1: 1,
+				X2: 4,
+				Y2: 5,
 			},
 			want: 5,
 		},
@@ -31,10 +28,10 @@ func TestGeom_Distance(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			g := &Geom{
-				x1: tt.fields.x1,
-				y1: tt.fields.y1,
-				x2: tt.fields.x2,
-				y2: tt.fields.y2,
+				X1: tt.fields.X1,
+				Y1: tt.fields.Y1,
+				X2: tt.fields.X2,
+				Y2: tt.fields.Y2,
 			}
 			if got := g.Distance(); got != tt.want {
 				t.Errorf("Distance() = %v, want %v", got, tt.want)
@@ -43,58 +40,50 @@ func TestGeom_Distance(t *testing.T) {
 	}
 }
 
-func TestNew(t *testing.T) {
-	type args struct {
-		x1 float64
-		y1 float64
-		x2 float64
-		y2 float64
+func TestGeom_Valid(t *testing.T) {
+	type fields struct {
+		X1 float64
+		Y1 float64
+		X2 float64
+		Y2 float64
 	}
 	tests := []struct {
-		name    string
-		args    args
-		want    *Geom
-		wantErr bool
+		name   string
+		fields fields
+		want   bool
 	}{
 		{
-			name: "new positive coordinates",
-			args: args{
-				x1: 1,
-				y1: 1,
-				x2: 4,
-				y2: 5,
+			name: "valid",
+			fields: fields{
+				X1: 1,
+				Y1: 1,
+				X2: 4,
+				Y2: 5,
 			},
-			want: &Geom{
-				x1: 1,
-				y1: 1,
-				x2: 4,
-				y2: 5,
-			},
-			wantErr: false,
+			want: true,
 		},
 		{
-			name: "new negative coordinates",
-			args: args{
-				x1: -1,
-				y1: 1,
-				x2: 4,
-				y2: 5,
+			name: "not valid",
+			fields: fields{
+				X1: -1,
+				Y1: 1,
+				X2: 4,
+				Y2: 5,
 			},
-			want: &Geom{},
-			wantErr: true,
+			want: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := New(tt.args.x1, tt.args.y1, tt.args.x2, tt.args.y2)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("New() error = %v, wantErr %v", err, tt.wantErr)
-				return
+			g := &Geom{
+				X1: tt.fields.X1,
+				Y1: tt.fields.Y1,
+				X2: tt.fields.X2,
+				Y2: tt.fields.Y2,
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("New() got = %v, want %v", got, tt.want)
+			if got := g.Valid(); got != tt.want {
+				t.Errorf("Valid() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
-

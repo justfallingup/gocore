@@ -1,27 +1,26 @@
+//Package geom реализует тип Geom из неотрицательных координат двух точек
+//позволяет проверить его валидность и вычислить расстояние между точками
 package geom
 
 import (
-	"errors"
 	"math"
 )
 
+//Geom структура из неотрицательных координат двух точек на плоскости
 type Geom struct {
-	x1 float64
-	y1 float64
-	x2 float64
-	y2 float64
+	X1, Y1, X2, Y2 float64
 }
 
-func New(x1, y1, x2, y2 float64) (*Geom, error) {
-	if x1 < 0 || y1 < 0 || x2 < 0 || y2 < 0 {
-		err := errors.New("coordinates must be not negative")
-		return &Geom{}, err
+//Valid проверяет неотрицательность координат, составляющих Geom
+func (g *Geom) Valid() bool {
+	if g.X1 < 0 || g.Y1 < 0 || g.X2 < 0 || g.Y2 < 0 {
+		return false
 	}
-	return &Geom{x1, y1, x2, y2}, nil
+	return true
 }
 
+//Distance вычисляет расстояние между точками, чьи координаты в Geom
 func (g *Geom) Distance() float64 {
-	d := math.Sqrt(math.Pow(g.x2 - g.x1, 2) + math.Pow(g.y2 - g.y1, 2))
-	return d
+	return math.Sqrt(math.Pow(g.X2 - g.X1, 2) + math.Pow(g.Y2 - g.Y1, 2))
 }
 
