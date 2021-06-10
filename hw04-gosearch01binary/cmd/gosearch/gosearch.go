@@ -14,6 +14,11 @@ import (
 func main()  {
 	token := flag.String("s", "", "a word you're searching for")
 	flag.Parse()
+	if *token == "" {
+		flag.PrintDefaults()
+		return
+	}
+
 	urls := []string{
 		"https://go.dev",
 		"https://golang.org",
@@ -39,21 +44,16 @@ func main()  {
 		return docs[i].ID < docs[j].ID
 	})
 
-	var ind = index.Storage(make(map[string][]int))
+	ind := index.New()
 	ind.Store(docs)
 
-	if *token != "" {
-		fmt.Println("Search results:")
-		ids, ok := ind[strings.ToLower(*token)]
-		if !ok {
-			fmt.Println("Not found")
-			return
-		}
-		for _, id := range ids {
-			x := sort.Search(len(docs), func(i int) bool {
-				return docs[i].ID >= id
-			})
-			fmt.Println(docs[x].URL, docs[x].Title)
-		}
+	fmt.Println("Search results:")
+	res := ind.Get(strings.ToLower(*token), docs)
+	if res == nil {
+		fmt.Println("Not found")
+		return
+	}
+	for _, i := range res {
+		fmt.Println(i.URL, i.Title)
 	}
 }
