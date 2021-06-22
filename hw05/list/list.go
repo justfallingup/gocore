@@ -24,25 +24,26 @@ func New() *List{
 }
 
 // Push вставляет элемент в начало списка.
-func (l *List) Push(e Elem) *Elem {
+func (l *List) Push(e Elem) *List {
 	e.prev = l.root
 	e.next = l.root.next
 	l.root.next = &e
 	if e.next != l.root {
 		e.next.prev = &e
 	}
-	return &e
+	return l
 }
 
 // Pop удаляет первый элемент списка.
-func (l *List) Pop() *List {
+func (l *List) Pop() *Elem {
 	el := l.root.next
 	if el == l.root {
-		return l
+		return &Elem{}
 	}
 	l.root.next = el.next
 	el.next.prev = l.root
-	return l
+	el.prev, el.next = nil, nil
+	return el
 }
 
 // String реализует интерфейс fmt.Stringer представляя список в виде строки.
@@ -65,12 +66,13 @@ func (l *List) Reverse() *List {
 	if el == l.root {
 		return l
 	}
-	lr := New()
 	for el != l.root {
-		lr.Push(*el)
-		el = el.next
-		l.Pop()
+		el.prev, el.next = el.next, el.prev
+		if el.prev == l.root {
+			break
+		}
+		el = el.prev
 	}
-	l.root = lr.root
+	l.root.next = el
 	return l
 }
